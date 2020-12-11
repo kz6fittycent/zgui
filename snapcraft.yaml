@@ -1,0 +1,84 @@
+name: zgui
+adopt-info: zgui
+summary: Linux GUI viewer for ZFS pool, dataset and host storage.
+description: |
+  Linux GUI viewer for ZFS pool, dataset and host storage. 
+  zgui uses libzfs directly and not ZFS command line tools.
+  
+license: GPL-3.0
+
+base: core18
+grade: stable
+confinement: strict
+
+apps:
+  zgui:
+    extensions:
+      - gnome-3-28
+    command: zgui
+    plugs: 
+      - mount-observe
+      - network-control
+      - process-control
+      - system-observe
+      - hardware-observe
+      - network
+      - physical-memory-observe
+      - home
+      
+parts:
+  zgui:
+    after:
+      - ghw 
+      - gomod
+    source: https://gitlab.com/beteras/zgui
+    source-type: git
+    plugin: nil
+    
+    build-packages:
+      - libzfslinux-dev
+      - libgtk-3-dev
+      - golang-go
+      - golang-github-gotk3-gotk3-dev
+      - golang-github-dustin-go-humanize-dev
+      
+    stage-packages:
+      - libzfslinux-dev
+      - libgtk-3-dev
+      - golang-go
+      - golang-github-gotk3-gotk3-dev
+      - golang-github-dustin-go-humanize-dev    
+      
+    override-pull: |
+      apt install -yy software-properties-common
+      add-apt-repository -yy ppa:longsleep/golang-backports
+      apt update
+      apt install -yy golang-go
+      
+      snapcraftctl pull
+      snapcraftctl set-version "$(git describe --tags | sed 's/^v//' | cut -d "-" -f1)"      
+
+  ghw:
+    source: https://github.com/jaypipes/ghw
+    source-type: git
+    plugin: go  
+    
+  gomod:
+    source: https://github.com/Helcaraxan/gomod
+    source-type: git
+    plugin: go
+    
+  cleanup:
+    after:
+      - ghw
+      - zgui
+      - gomod
+    plugin: nil
+    build-snaps:
+      - core18
+      - gnome-3-28-1804
+    override-prime: |
+      set -eux
+      for snap in "core18" "gnome-3-28-1804"; do  # List all content-snaps and base snaps you're using here
+        cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+      done    
