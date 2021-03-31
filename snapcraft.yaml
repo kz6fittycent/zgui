@@ -1,5 +1,6 @@
 name: zgui
-adopt-info: zgui
+#adopt-info: zgui
+version: 'git'
 summary: Linux GUI viewer for ZFS pool, dataset and host storage.
 description: |
   Linux GUI viewer for ZFS pool, dataset and host storage. 
