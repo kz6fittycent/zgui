@@ -16,7 +16,7 @@ apps:
   zgui:
     extensions:
       - gnome-3-28
-    command: zgui
+    command: bin/zgui
     plugs: 
       - mount-observe
       - network-control
