@@ -56,8 +56,8 @@ parts:
       apt update
       apt install -yy golang-go
       
-      snapcraftctl pull
-      snapcraftctl set-version "$(git describe --tags | sed 's/^v//' | cut -d "-" -f1)"      
+#      snapcraftctl pull
+#      snapcraftctl set-version "$(git describe --tags | sed 's/^v//' | cut -d "-" -f1)"      
 
   ghw:
     source: https://github.com/jaypipes/ghw
